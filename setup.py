@@ -8,14 +8,14 @@ def readme():
         return f.read()
 
 setup(
-    name='lab-report-helper',
+    name='labreporthelper',
     version='0.1',
-    description='lab-report-helper',
-    url='https://github.com/calvinku96/lab-report-helper',
+    description='labreporthelper',
+    url='https://github.com/calvinku96/labreporthelper',
     author='Calvin',
     author_email='calvinku96@gmail.com',
     license='MIT',
-    packages=['lab-report-helper'],
+    packages=['labreporthelper'],
     install_requires=[
         'numpy', 'scipy', 'matplotlib', 'importlib'
     ],

@@ -1,28 +1,23 @@
 #!/usr/bin/env python2.7
 import os
-import sys
 import json
 
 
 def create_dir():
     cwd = os.getcwd()
-    
     # settings file
-    settings_list = [
-        "{",
-        "\t\"DATASETS_LIST\":{\"process\":[\"Experiment\"]},",
-        "\t\"PURPOSE\":{",
-        "\t\t\"data\":{\"folder\":\"data\", \"extension\":\"dat\"},",
-        "\t\t\"pickle\":{\"folder\":\"pickle\", \"extension\":\"pickle\"},",
-        "\t\t\"plots\":{\"folder\":\"plots\", \"extension\":\"pdf\"},",
-        "\t\t\"tables\":{\"folder\":\"tables\", \"extension\":\"tex\"}",
-        "\t},",
-        "\t\"COMPUTE\":{\"name\":\"compute\", \"extension\": \"tex\"},",
-        "\t\"PYTHON_MODULE\":\"python\"",
-        "}",
-    ]
-    settings_str = "\n".join(settings_list)
-    settings = json.loads(settings_str)
+    settings = {
+        "DATASETS_LIST": {"process":["Experiment"]},
+        "PURPOSE":{
+            "data":{"folder":"data", "extension":"dat"},
+            "pickle":{"folder":"pickle", "extension":"pickle"},
+            "plots":{"folder":"plots", "extension":"pdf"},
+            "tables":{"folder": "tables", "extension":"tex"},
+        },
+        "COMPUTE":{"name":"compute", "extension":"tex"},
+        "PYTHON_MODULE":"python",
+    }
+
     folders = [a["folder"] for a in settings["PURPOSE"].itervalues()]
     folders.append(settings["PYTHON_MODULE"])
     settings_path = cwd + os.sep + "settings" + os.extsep + "json"
@@ -30,8 +25,7 @@ def create_dir():
         with open(settings_path, 'rb') as f:
             settings = json.load(f)
     else:
-        with open(settings_path, 'wb') as f:
-            f.write("\n".join(settings_list))
+        json.dump(settings, open(settings_path, 'wb'), indent=4)
 
     for foldername in folders:
         fullpath = cwd + os.sep + foldername + os.sep
@@ -39,97 +33,88 @@ def create_dir():
             os.makedirs(fullpath)
         fullpath += os.extsep + "keep"
         with open(fullpath, 'a'):
-            os.utime(fullpath)
+            os.utime(fullpath, None)
 
     # manage.py
-    manage_list = [
-        "#!/usr/bin/env python2.7",
-        "\"\"\"",
-        "Pass sys.argv to lab-report-helper.manage.manage",
-        "\"\"\"",
-        "import sys",
-        "import os",
-        "import json",
-        "import importlib",
-        "",
-        "",
-        "def main():",
-        "\t\"\"\"",
-        "\tMethod that interfaces with user",
-        "\t\"\"\"",
-        "\tfrom lab-report-helper.lib.manage import manage",
-        "\tsys.path.append(os.path.realpath(__file__))",
-        "\tsettings_path = os.sep.join(os.path.realpath" +\
-            "(__file__).split(os.sep)[:-1])",
-        "\tsettings_path += os.sep + \"settings\" + os.extsep + \"json\"",
-        "\twith open(settings_path, 'rb') as settings_file:",
-        "\t\tsettings = json.load(settings_file)",
-        "\tpython_folder = settings.get(\"PYTHON_MODULE\", \"python\")",
-        "\tvar = importlib.import_module(python_folder + \".variables\")",
-        "\tmanage(settings_path, var.ROOT_DIR, sys.argv)",
-        "",
-        "if __name__ == \"__main__\":",
-        "\tmain()"
-    ]
+    manage_string = """#!/usr/bin/env python2.7
+\"\"\"
+Pass sys.argv to labreporthelper.manage.manage
+\"\"\"
+import sys
+import os
+import json
+import importlib
+
+
+def main():
+    \"\"\"
+    Method that interfaces with user
+    \"\"\"
+    from labreporthelper.manage import manage
+    sys.path.append(os.path.realpath(__file__))
+    settings_path = os.sep.join(os.path.realpath(__file__).split(os.sep)[:-1])
+    settings_path += os.sep + "settings" + os.extsep + "json"
+    with open(settings_path, 'rb') as settings_file:
+        settings = json.load(settings_file)
+    python_folder = settings.get("PYTHON_MODULE", "python")
+    var = importlib.import_module(python_folder + ".variables")
+    manage(settings_path, var.ROOT_DIR, sys.argv)
+
+if __name__ == "__main__":
+    main()
+"""
     with open(cwd + os.sep + "manage" + os.extsep + "py", "wb") as f:
-        f.write("\n".join(manage_list))
+        f.write(manage_string)
     # constants.py
-    constant_list = [
-        "\"\"\"",
-        "Module to store user defined constants",
-        "\"\"\"",
-        "",
-        ""
-    ]
+    constant_string = """\"\"\"
+Module to store user defined constants
+\"\"\"
+
+
+"""
     with open(cwd + os.sep + settings["PYTHON_MODULE"] + os.sep + "constant" +
               os.extsep + "py", 'wb') as f:
-        f.write("\n".join(constant_list))
+        f.write(constant_string)
     # process.py
-    process_list_pre = [
-        "\"\"\"",
-        "Main Module. All operations are put here",
-        "\"\"\"",
-        "from lab-report-helper.dataset import DataSets"
-    ]
-    process_list_repeat = [
-        "",
-        "",
-        "class {classname}(DataSets):",
-        "\t\"\"\"",
-        "\tData Processing, Plots, LaTeX Macros, and Tables",
-        "\t\"\"\"",
-        "\tdata = {",
-        "\t\t}",
-        "",
-        "\tdef operations(self):",
-        "\t\t\"\"\"",
-        "\t\tMain operations",
-        "\t\t\"\"\""
-    ]
+    process_string_pre = """\"\"\"
+Main Module. All operations are put here
+\"\"\"
+from labreporthelper.dataset import DataSets
+"""
+    process_string_repeat = """
+
+
+class {}(DataSets):
+    \"\"\"
+    Data Processing, Plots, LaTeX Macros, and Tables
+    \"\"\"
+    data = {{}}
+
+    def operations(self):
+        \"\"\"
+        Main operations
+        \"\"\"
+"""
     for key, val in settings["DATASETS_LIST"].iteritems():
         with open(cwd + os.sep + settings["PYTHON_MODULE"] + os.sep + key
-                + os.extsep + "py", 'wb') as f:
-            f.write("\n".join(process_list_pre))
+                  + os.extsep + "py", 'wb') as f:
+            f.write(process_string_pre)
             for classname in val:
-                f.write(
-                    "\n".join(process_list_repeat).format(classname=classname)
-                )
+                f.write(process_string_repeat.format(classname))
     # variables.py
-    variables_list = [
-        "\"\"\"",
-        "Variables",
-        "\"\"\"",
-        "",
-        "",
-        "# NEEDED BY lab-report-helper DO NOT DELETE",
-        "ROOT_DIR = os.sep.join(os.path.realpath(__file__).split(os.sep)[:-2])",
-        "",
-        "# USER DEFINED VARIABLES",
-        "import python.constants as constants"
-    ]
+    variables_string = """\"\"\"
+Variables
+\"\"\"
+
+
+# NEEDED BY labreporthelper DO NOT DELETE
+ROOT_DIR = os.sep.join(os.path.realpath(__file__).split(os.sep)[:-2])
+
+# USER DEFINED VARIABLES
+import {}.constants as constants
+"""
     with open(cwd + os.sep + settings["PYTHON_MODULE"] + os.sep + "variables" +
-            os.extsep + "py", 'wb') as f:
-        f.write("\n".join(variables_list))
+              os.extsep + "py", 'wb') as f:
+        f.write(variables_string.format(settings["PYTHON_MODULE"]))
 
-
-create_dir():
+create_dir()

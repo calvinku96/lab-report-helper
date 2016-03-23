@@ -1,5 +1,5 @@
-lab-report-helper
-=================
+labreporthelper
+===============
 
 Module in python to help in automating lab reports
 
