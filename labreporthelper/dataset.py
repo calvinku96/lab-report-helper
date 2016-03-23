@@ -83,7 +83,7 @@ class DataSets(object):
                     dictionary: {"xerr": xerr, "yerr": yerr}
                     array_like, scalar: yerr
                 fmt: string, default="k."
-                bestfitfmt: string, default="k."
+                bestfitfmt: string, default="k-"
                 bestfit: BestFit child class
                     eg. bestfit.polyfit.PolyFit, bestfit.logfit.LogFit
                 suptitle: string, default=None

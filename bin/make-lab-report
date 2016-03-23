@@ -1,6 +1,7 @@
 #!/usr/bin/env python2.7
 import os
 import json
+import stat
 
 
 def create_dir():
@@ -34,6 +35,10 @@ def create_dir():
         fullpath += os.extsep + "keep"
         with open(fullpath, 'a'):
             os.utime(fullpath, None)
+    init_path = cwd + os.sep + settings["PYTHON_MODULE"] + os.sep
+    init_path += "__init__" + os.extsep + "py"
+    with open(init_path, 'a'):
+        os.utime(init_path, None)
 
     # manage.py
     manage_string = """#!/usr/bin/env python2.7
@@ -63,8 +68,17 @@ def main():
 if __name__ == "__main__":
     main()
 """
-    with open(cwd + os.sep + "manage" + os.extsep + "py", "wb") as f:
+    manage_path = cwd + os.sep + "manage" + os.extsep + "py"
+    with open(manage_path, "wb") as f:
         f.write(manage_string)
+    os.chmod(manage_path, stat.S_IXUSR)
+    os.chmod(manage_path, stat.S_IXGRP)
+    os.chmod(manage_path, stat.S_IXOTH)
+    st = os.stat(manage_path)
+    os.chmod(
+        manage_path, st.st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH |
+        stat.S_IRUSR | stat.S_IWUSR
+    )
     # constants.py
     constant_string = """\"\"\"
 Module to store user defined constants
@@ -105,13 +119,13 @@ class {}(DataSets):
     variables_string = """\"\"\"
 Variables
 \"\"\"
-
+import os
 
 # NEEDED BY labreporthelper DO NOT DELETE
 ROOT_DIR = os.sep.join(os.path.realpath(__file__).split(os.sep)[:-2])
 
 # USER DEFINED VARIABLES
-import {}.constants as constants
+import {}.constant as constant
 """
     with open(cwd + os.sep + settings["PYTHON_MODULE"] + os.sep + "variables" +
               os.extsep + "py", 'wb') as f:
