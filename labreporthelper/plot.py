@@ -33,7 +33,9 @@ class PlotSingle2D(object):
                 bestfitfmt: string, default="k-"
                 bestfit: BestFit child class
                     eg. bestfit.polyfit.PolyFit, bestfit.logfit.LogFit
-                suptitle: string, default=None
+                bestfitlim: tuple, default=None
+                    xlim for bestfit line
+                suptitle: string, default=xlim
                     suptitle of pdf plot, formatted with outputdict
                 suptitle_fontsize: int, default=15
                     font size of suptitle
@@ -45,6 +47,10 @@ class PlotSingle2D(object):
                     label of string xlabel, formatted with outputdict
                 ylabel: string, default=None
                     label of string ylabel, formatted with outputdict
+                xlim: tuple, default=None
+                    xlim
+                ylim: tuple, default=None
+                    ylim
                 outputdict: dictionary, default=None
                     pass keys and arguments for formatting and
                     to output
@@ -115,9 +121,14 @@ class PlotSingle2D(object):
         # bestfit
         bestfit = self.kwargs.get("bestfit", None)
         if bestfit is not None:
+            bestfitlim = self.kwargs.get("bestfitlim", None)
+            if bestfitlim is None:
+                bestfitlim = self.kwargs.get("xlim", None)
+            if bestfitlim is None:
+                bestfitlim = (min(self.x), max(self.x))
             fit_args = bestfit.do_bestfit()
             bestfit_line = bestfit.get_bestfit_line(
-                x_min=min(self.x), x_max=max(self.x))
+                x_min=bestfitlim[0], x_max=bestfitlim[1])
             self.subplot.plot(
                 bestfit_line[0], bestfit_line[1],
                 self.kwargs.get("bestfitfmt", "k-")
@@ -152,6 +163,12 @@ class PlotSingle2D(object):
                 title.format(**outputdict),
                 fontsize=int(self.kwargs.get("title_fontsize", 12)),
                 **title_options)
+        xlim = self.kwargs.get("xlim", None)
+        ylim = self.kwargs.get("ylim", None)
+        if xlim is not None:
+            self.subplot.set_xlim(xlim)
+        if ylim is not None:
+            self.subplot.set_ylim(ylim)
         # axis format
         self.subplot.ticklabel_format(
             style="sci", useOffset=False,
