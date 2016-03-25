@@ -121,6 +121,74 @@ class CustomDataFile(object):
             )
 
 
+class MCADataFile(CustomDataFile):
+    """
+    Data Table in the MCA
+    """
+    def create_dat_file(self):
+        """Pass
+        """
+        pass
+    def save_to_internal(self, data):
+        """save
+        """
+        if self.filetype is "pickle":
+            pickle.dump(data, open(self.location_internal, "wb"))
+        elif self.filetype is "hickle":
+            import hickle
+            hickle.dump(data, open(self.location_internal, "wb"))
+        else:
+            raise ValueError(
+                "Invalid filetype {} (must be {} or {})".format(
+                    self.filetype, "pickle", "hickle"
+                )
+            )
+    def parse_data_to_internal(self, data=None):
+        """parse to internal
+        """
+        if data is None:
+            f = open(self.location_dat, "rb")
+            data = {
+                "PMCA SPECTRUM": {},
+                "DATA": [],
+                "DP5 CONFIGURATION": {},
+                "DPP STATUS": {}
+            }
+            delimiter = {
+                "PMCA SPECTRUM": " - ",
+                "DP5 CONFIGURATION": "=",
+                "DPP STATUS": ":"
+            }
+            comments = {
+                "PMCA SPECTRUM": None,
+                "DP5 CONFIGURATION": ";",
+                "DPP STATUS": None
+            }
+            for e in f:
+                if "<<" in e:
+                    if "<<END>>" in e:
+                        current = None
+                    elif "<<PMCA SPECTRUM>>" in e:
+                        current = "PMCA SPECTRUM"
+                    elif "<<DATA>>" in e:
+                        current = "DATA"
+                    elif "<<DP5 CONFIGURATION>>" in e:
+                        current = "DP5 CONFIGURATION"
+                    elif "<<DPP STATUS>>" in e:
+                        current = "DPP STATUS"
+                else:
+                    if current == "DATA":
+                        data["DATA"].append(float(e))
+                    elif current is not None:
+                        e = e.split("\r\n")[0]
+                        if comments[current] is not None:
+                            e = e.split(comments[current], 1)[0]
+                        e_list = e.split(delimiter[current], 1)
+                        data[current][e_list[0]] = e_list[1]
+            f.close()
+        self.save_to_internal(data)
+
+
 class DataFile(CustomDataFile):
     """
     Standard Data Table using numpy to parse
@@ -148,4 +216,3 @@ class DataFile(CustomDataFile):
                     self.filetype, "pickle", "hickle"
                 )
             )
-
