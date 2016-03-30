@@ -15,7 +15,7 @@ setup(
     author='Calvin',
     author_email='calvinku96@gmail.com',
     license='MIT',
-    packages=['labreporthelper'],
+    packages=['labreporthelper', 'labreporthelper.bestfit'],
     install_requires=[
         'numpy', 'scipy', 'matplotlib', 'importlib'
     ],
