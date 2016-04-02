@@ -148,3 +148,9 @@ class BestFit(object):
             raise ValueError("Lengths of data_x and data_y are different")
         mae_y = self.bestfit_func(data_x)
         return np.mean(abs(mae_y - data_y))
+
+    def get_fit_args(self):
+        """
+        return fit_args
+        """
+        return self.fit_args

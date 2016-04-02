@@ -4,11 +4,11 @@ DataSets -- Main Operation Class
 import os
 import json
 from abc import ABCMeta, abstractmethod
-import numpy as np
 
 from . import table
 from .plot import PlotSingle2D
 from .manage import FILEPATHSTR, ENV_VAR_SETTINGS, ENV_VAR_ROOT_DIR
+from .misc import get_default_format
 
 
 with open(os.environ[ENV_VAR_SETTINGS], 'rb') as settings_file:
@@ -130,14 +130,21 @@ class DataSets(object):
 
 
     @staticmethod
-    def make_tex_table(inputlist, outputfilename, **kwargs):
+    def make_tex_table(inputlist, outputfilename, fmt=None, **kwargs):
         """
         Do make_tex_table and pass all arguments
 
         args:
             inputlist: list
             outputfilename: string
+            fmt: dictionary
+                key: integer
+                    column index starting with 0
+                values: string
+                    format string. eg "{:g}"
             **kwargs:
+                nonestring: string
+                    string when objecttype is None
         """
         outputfilepath = FILEPATHSTR.format(
             root_dir=ROOT_DIR, os_sep=os.sep, os_extsep=os.extsep,
@@ -146,7 +153,7 @@ class DataSets(object):
             ext=PURPOSE.get("tables").get("extension", "tex")
         )
         table.make_tex_table(inputlist, open(outputfilepath, 'wb'),
-                             close=kwargs.get("close", True), **kwargs)
+                             fmt=fmt, close=kwargs.get("close", True), **kwargs)
 
     def make_compute_file(self):
         """
@@ -159,10 +166,7 @@ class DataSets(object):
             vardict_items = self.vardict.items()
         for key, val in vardict_items:
             # get default
-            if np.isscalar(val):
-                default_format = "{:.3e}"
-            else:
-                default_format = "{}"
+            default_format = get_default_format(val)
             string_format = "\\newcommand{{\\{}}}{{" + self.vardictformat.get(
                 key, default_format) + "}}\n"
             string += string_format.format(key, val).replace("+", "")
