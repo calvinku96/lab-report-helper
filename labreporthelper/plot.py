@@ -77,27 +77,28 @@ class PlotSingle2D(object):
         or a dictionary of subplot
         """
         self.subplot = self.figure.add_subplot(1, 1, 1)
+        return self
 
     def before_plot(self):
         """
         Method to be overriden in more complex child classes.
         Done before plot
         """
-        pass
+        return self
 
     def after_plot(self):
         """
         Method to be overriden in more complex child classes.
         Done after plot
         """
-        pass
+        return self
 
     def after_label(self):
         """
         Method to be overriden in more complex child classes
         Done after label
         """
-        pass
+        return self
 
     def do_plot_and_bestfit(self):
         """
@@ -135,6 +136,7 @@ class PlotSingle2D(object):
             )
             self.outputdict["fit_args"] = fit_args
             self.outputdict["rmse"] = bestfit.get_rmse()
+        return self
 
     def do_label(self):
         """
@@ -174,18 +176,21 @@ class PlotSingle2D(object):
             style="sci", useOffset=False,
             scilimits=self.kwargs.get("scilimits", (-4, 4))
         )
+        return self
 
     def save(self):
         """
         save plot to pdf
         """
         self.figure.savefig(self.filepath)
+        return self
 
     def close(self):
         """
         close figure
         """
         self.figure.clf()
+        return self
 
     def get_outputdict(self):
         """
