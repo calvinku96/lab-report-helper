@@ -9,7 +9,7 @@ def readme():
 
 setup(
     name='labreporthelper',
-    version='0.1',
+    version='0.2',
     description='labreporthelper',
     url='https://github.com/calvinku96/labreporthelper',
     author='Calvin',
