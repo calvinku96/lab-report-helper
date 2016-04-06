@@ -46,7 +46,7 @@ class ODRFit(BestFit):
     """
     BestFit with ODR
     """
-    important_variables = set(["x", "y", "func"])
+    important_variables = set(["x", "y"])
     def __init__(self, **kwargs):
         """
         Constructor
@@ -70,14 +70,18 @@ class ODRFit(BestFit):
         x = np.array(self.args["x"])
         y = np.array(self.args["y"])
         if self.args.get("use_RealData", True):
-            realdata_kwargs = self.args.get("RealData", {})
+            realdata_kwargs = self.args.get("RealData_kwargs", {})
             data = RealData(x, y, **realdata_kwargs)
         else:
-            data_kwargs = self.args.get("Data", {})
+            data_kwargs = self.args.get("Data_kwargs", {})
             data = Data(x, y, **data_kwargs)
-        model_kwargs = self.args.get("Model", {})
-        model = Model(self.args["func"], **model_kwargs)
-        odr_kwargs = self.args.get("ODR", {})
+        model = self.args.get("Model", None)
+        if model is None:
+            if "func" not in self.args.keys():
+                raise KeyError("Need fitting function")
+            model_kwargs = self.args.get("Model_kwargs", {})
+            model = Model(self.args["func"], **model_kwargs)
+        odr_kwargs = self.args.get("ODR_kwargs", {})
         odr = ODR(data, model, **odr_kwargs)
         self.output = odr.run()
         if self.args.get("pprint", False):
