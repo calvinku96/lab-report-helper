@@ -9,8 +9,8 @@ def readme():
 
 setup(
     name='labreporthelper',
-    version='0.2.1',
-    description='labreporthelper',
+    version='0.2.2',
+    description='Collection of shortcut methods commonly used to generate plots and tables in lab reports',
     url='https://github.com/calvinku96/labreporthelper',
     author='Calvin',
     author_email='calvinku96@gmail.com',

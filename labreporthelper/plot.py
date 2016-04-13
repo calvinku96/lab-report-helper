@@ -21,16 +21,23 @@ class PlotSingle2D(object):
                 filepath of pdf to save
             **kwargs:
                 figure_options: passed to matplotlib.pyplot.figure
-                xlabel_options:
-                ylabel_options:
-                suptitle_options:
-                title_options:
-                scilimits:
+                xlabel_options: dict
+                    kwargs passed in set_xlabel
+                ylabel_options: dict
+                    kwargs passed in set_ylabel
+                suptitle_options: dict
+                    kwargs passed in figure.suptitle
+                title_options: dict
+                    kwargs passed in set_title
+                scilimits: tuple
+                    if number outside this limits, will use scientific notation
                 errors: dictionary, array_like, scalar
                     dictionary: {"xerr": xerr, "yerr": yerr}
                     array_like, scalar: yerr
                 fmt: string, default="k."
+                    line format
                 bestfitfmt: string, default="k-"
+                    bestfit line format
                 bestfit: BestFit child class
                     eg. bestfit.polyfit.PolyFit, bestfit.logfit.LogFit
                 bestfitlim: tuple, default=None

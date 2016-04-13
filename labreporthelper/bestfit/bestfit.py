@@ -154,3 +154,9 @@ class BestFit(object):
         return fit_args
         """
         return self.fit_args
+
+def bestfit(fit_class, **kwargs):
+    """
+    Shortcut function for any fit_class
+    """
+    return fit_class(**kwargs).do_bestfit()

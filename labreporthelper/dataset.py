@@ -1,5 +1,5 @@
 """
-DataSets -- Main Operation Class
+Main Operation Class
 """
 import os
 import json
@@ -11,10 +11,13 @@ from .manage import FILEPATHSTR, ENV_VAR_SETTINGS, ENV_VAR_ROOT_DIR
 from .misc import get_default_format
 
 
-with open(os.environ[ENV_VAR_SETTINGS], 'rb') as settings_file:
-    SETTINGS = json.load(settings_file)
-ROOT_DIR = os.environ[ENV_VAR_ROOT_DIR]
-PURPOSE = SETTINGS.get("PURPOSE", {})
+try:
+    with open(os.environ[ENV_VAR_SETTINGS], 'rb') as settings_file:
+        SETTINGS = json.load(settings_file)
+    ROOT_DIR = os.environ[ENV_VAR_ROOT_DIR]
+    PURPOSE = SETTINGS.get("PURPOSE", {})
+except:
+    print "ERROR GETTING SETTINGS"
 
 
 class DataSets(object):
@@ -79,14 +82,29 @@ class DataSets(object):
             filepath: string
                 filepath of pdf to save
             **kwargs:
+                figure_options: passed to matplotlib.pyplot.figure
+                xlabel_options: dict
+                    kwargs passed in set_xlabel
+                ylabel_options: dict
+                    kwargs passed in set_ylabel
+                suptitle_options: dict
+                    kwargs passed in figure.suptitle
+                title_options: dict
+                    kwargs passed in set_title
+                scilimits: tuple
+                    if number outside this limits, will use scientific notation
                 errors: dictionary, array_like, scalar
                     dictionary: {"xerr": xerr, "yerr": yerr}
                     array_like, scalar: yerr
                 fmt: string, default="k."
+                    line format
                 bestfitfmt: string, default="k-"
+                    bestfit line format
                 bestfit: BestFit child class
                     eg. bestfit.polyfit.PolyFit, bestfit.logfit.LogFit
-                suptitle: string, default=None
+                bestfitlim: tuple, default=None
+                    xlim for bestfit line
+                suptitle: string, default=xlim
                     suptitle of pdf plot, formatted with outputdict
                 suptitle_fontsize: int, default=15
                     font size of suptitle
@@ -98,15 +116,13 @@ class DataSets(object):
                     label of string xlabel, formatted with outputdict
                 ylabel: string, default=None
                     label of string ylabel, formatted with outputdict
+                xlim: tuple, default=None
+                    xlim
+                ylim: tuple, default=None
+                    ylim
                 outputdict: dictionary, default=None
                     pass keys and arguments for formatting and
                     to output
-        return: dictionary
-            outputdict: passed from outputdict
-                fit_args: list
-                    fitting arguments
-                rmse: list
-                    rmse
         """
         pdffilepath = DataSets.get_pdffilepath(pdffilename)
         plotsingle2d = PlotSingle2D(x, y, pdffilepath, **kwargs)

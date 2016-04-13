@@ -15,7 +15,11 @@ class CustomDataFile(object):
     """
     Input data file class
     """
-    def __init__(self, name, ext=None, argnum=2, filetype="pickle", **kwargs):
+    def __init__(
+            self, name, ext=None, argnum=2, filetype="pickle",
+            location_dat=None, location_internal=None,
+            **kwargs
+        ):
         """
         Constructor
 
@@ -41,19 +45,23 @@ class CustomDataFile(object):
         purpose = settings.get("PURPOSE", {})
         self.filetype = filetype if filetype is "pickle" or "hickle"\
             else "pickle"
-        self.location_dat = FILEPATHSTR.format(
-            root_dir=root_dir, os_sep=os.sep, os_extsep=os.extsep,
-            name=self.valid_filename,
-            folder=purpose.get("data", {}).get("folder", "data"),
-            ext=ext if ext is not None else purpose.get(
-                "data", {}).get("extension", "dat"),
-        )
-        self.location_internal = FILEPATHSTR.format(
-            root_dir=root_dir, os_sep=os.sep, os_extsep=os.extsep,
-            name=self.valid_filename,
-            folder=purpose.get("pickle", {}).get("folder", "pickle"),
-            ext=purpose.get("pickle", {}).get("extension", "pickle")
-        )
+        self.location_dat = location_dat
+        if self.location_dat is None:
+            self.location_dat = FILEPATHSTR.format(
+                root_dir=root_dir, os_sep=os.sep, os_extsep=os.extsep,
+                name=self.valid_filename,
+                folder=purpose.get("data", {}).get("folder", "data"),
+                ext=ext if ext is not None else purpose.get(
+                    "data", {}).get("extension", "dat"),
+            )
+        self.location_internal = location_internal
+        if self.location_internal is None:
+            self.location_internal = FILEPATHSTR.format(
+                root_dir=root_dir, os_sep=os.sep, os_extsep=os.extsep,
+                name=self.valid_filename,
+                folder=purpose.get("pickle", {}).get("folder", "pickle"),
+                ext=purpose.get("pickle", {}).get("extension", "pickle")
+            )
 
     def create_dat_file(self):
         """

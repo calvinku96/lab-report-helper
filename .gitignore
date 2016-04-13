@@ -9,3 +9,12 @@
 /*.egg-info
 
 *.swp
+
+_build
+doc/build
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
