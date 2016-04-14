@@ -3,6 +3,8 @@ labreporthelper
 
 Module in python to help in automating lab reports
 
+Documentation: <http://labreporthelper.readthedocs.org/en/latest/>
+
 Installations
 -------------
 Clone and run
