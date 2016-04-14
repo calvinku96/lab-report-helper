@@ -11,7 +11,6 @@ Contents:
 .. toctree::
    :maxdepth: 3
 
-   intro.rst
    install.rst
    tutorial.rst
    labreporthelper.rst

@@ -11,7 +11,7 @@
 *.swp
 
 _build
-doc/build
+docs/build
 *.com
 *.class
 *.dll
