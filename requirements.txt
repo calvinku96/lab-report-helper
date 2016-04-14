@@ -1,1 +1,1 @@
-labreporthelper
+--no-dependencies labreporthelper
