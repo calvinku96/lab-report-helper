@@ -15,7 +15,7 @@
 import sys
 import os
 import sphinx_rtd_theme
-import mock
+# import mock
 
 
 
@@ -299,7 +299,7 @@ texinfo_documents = [
 
 autoclass_content = 'both'
 
-MOCK_MODULES = ['numpy', 'scipy', 'matplotlib', 'importlib',
-                'matplotlib.pyplot', 'scipy.optimize', 'scipy.odr',]
-for mod_name in MOCK_MODULES:
-    sys.modules[mod_name] = mock.Mock()
+# MOCK_MODULES = ['numpy', 'scipy', 'matplotlib', 'importlib',
+#                 'matplotlib.pyplot', 'scipy.optimize', 'scipy.odr',]
+# for mod_name in MOCK_MODULES:
+#     sys.modules[mod_name] = mock.Mock()
