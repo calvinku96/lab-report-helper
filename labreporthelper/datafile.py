@@ -184,9 +184,13 @@ class MCADataFile(CustomDataFile):
                         current = "DP5 CONFIGURATION"
                     elif "<<DPP STATUS>>" in e:
                         current = "DPP STATUS"
+                    elif "<<ROI>>" in e:
+                        current = "ROI"
                 else:
                     if current == "DATA":
                         data["DATA"].append(float(e))
+                    elif current == "ROI":
+                        continue
                     elif current is not None:
                         e = e.split("\r\n")[0]
                         if comments[current] is not None:
