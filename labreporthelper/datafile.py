@@ -16,10 +16,10 @@ class CustomDataFile(object):
     Input data file class
     """
     def __init__(
-            self, name, ext=None, argnum=2, filetype="pickle",
-            location_dat=None, location_internal=None,
-            **kwargs
-        ):
+        self, name, ext=None, argnum=2, filetype="pickle",
+        location_dat=None, location_internal=None,
+        **kwargs
+    ):
         """
         Constructor
 
@@ -85,7 +85,8 @@ class CustomDataFile(object):
         if os.path.isfile(self.location_dat):
             files = glob.glob(self.location_dat + "*")
             count = 2
-            while ((self.location_dat + str(count) in files)
+            while (
+                    (self.location_dat + str(count) in files)
                   ) and (count <= 10):
                 count += 1
             os.rename(self.location_dat, self.location_dat + str(count))
@@ -137,6 +138,7 @@ class MCADataFile(CustomDataFile):
         """Pass
         """
         pass
+
     def save_to_internal(self, data):
         """save
         """
@@ -151,6 +153,7 @@ class MCADataFile(CustomDataFile):
                     self.filetype, "pickle", "hickle"
                 )
             )
+
     def parse_data_to_internal(self, data=None):
         """parse to internal
         """
@@ -209,6 +212,7 @@ class DataFile(CustomDataFile):
         """Pass
         """
         pass
+
     def parse_data_to_internal(self, data=None):
         """Use numpy loadtxt
         """

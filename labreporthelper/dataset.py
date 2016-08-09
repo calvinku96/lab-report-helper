@@ -144,7 +144,6 @@ class DataSets(object):
             ext=PURPOSE.get("plots").get("extension", "pdf")
         )
 
-
     @staticmethod
     def make_tex_table(inputlist, outputfilename, fmt=None, **kwargs):
         """
@@ -168,8 +167,8 @@ class DataSets(object):
             folder=PURPOSE.get("tables").get("folder", "tables"),
             ext=PURPOSE.get("tables").get("extension", "tex")
         )
-        table.make_tex_table(inputlist, open(outputfilepath, 'wb'),
-                             fmt=fmt, close=kwargs.get("close", True), **kwargs)
+        table.make_tex_table(inputlist, open(outputfilepath, 'wb'), fmt=fmt,
+                             close=kwargs.get("close", True), **kwargs)
 
     def make_compute_file(self):
         """
